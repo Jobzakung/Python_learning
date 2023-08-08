@@ -3,11 +3,11 @@ import tkinter as tk
 class SnakeSimulation(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("งูเคลื่อนที่")
-        self.geometry("400x420")  # Increased the height to accommodate the snake movement
+        self.title("เกมงู")
+        self.geometry("400x450")
         self.snake_matrix = [[0, 0], [0, 0], [0, 0], [0, 0]]
 
-        self.canvas = tk.Canvas(self, width=400, height=400, bg="white")
+        self.canvas = tk.Canvas(self, width=400, height=400, bg="black")
         self.canvas.pack()
 
         self.draw_snake()
