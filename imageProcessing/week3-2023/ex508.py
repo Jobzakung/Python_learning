@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-path = r'Fig0907.tif'
+path = r'week3-2023/ex4.png'
 
 # using imread()  
 img=cv2.imread(path)

@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-image_path = r'note.png'
+image_path = r'week3-2023/note.png'
 original_image = cv2.imread(image_path)
 
 image = cv2.imread(image_path)
