@@ -1,0 +1,20 @@
+train : "/Users/sukird/Python_learning/imageProcessing/Last_week/dataset"
+val : "/Users/sukird/Python_learning/imageProcessing/Last_week/dataset"
+
+nc: 4
+names: ["cat","dog","pandared","samoyed"]
+
+hsv_h: 0.015
+hsv_s: 0.5
+hsv_v: 0.4
+freeze: (0,..,20)
+batch_size: -1
+degree: 0.5
+translate: 0.1
+scale: 0.25
+shear: 0.1
+perspective: 0.1
+flipup: 0.7
+fliplr: 0.5
+mosaic: 0.3
+mixup: 0.1

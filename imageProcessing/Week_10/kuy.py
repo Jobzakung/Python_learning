@@ -1,9 +1,15 @@
 import pickle
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import layers, models
+from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, ReLU, Add, AveragePooling2D, Flatten, Dense
+from tensorflow.keras.models import Model
 from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+
 
 def load_cifar10_dataset(folder_path):
     train_data = []
@@ -27,44 +33,71 @@ def load_cifar10_dataset(folder_path):
 # Specify the folder path where your CIFAR-10 dataset is located
 cifar10_folder = "./imageProcessing/Week_10/cifar-10-batches-py"
 
-# Load the dataset
+# # Load the dataset
 train_images, train_labels, test_images, test_labels = load_cifar10_dataset(cifar10_folder)
-
 # Now you can use train_images, train_labels, test_images, and test_labels for your machine learning tasks.
 train_images, test_images = train_images / 255.0, test_images / 255.0
 
 # Convert labels to one-hot encoding
-train_labels = to_categorical(train_labels, num_classes=10)
-test_labels = to_categorical(test_labels, num_classes=10)
+train_labels = to_categorical(train_labels, 10)
+test_labels = to_categorical(test_labels, 10)
 
-# Define a CNN model
-model = models.Sequential([
-    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.MaxPooling2D((2, 2)),
-    layers.Conv2D(64, (3, 3), activation='relu'),
-    layers.Flatten(),
-    layers.Dense(64, activation='relu'),
-    layers.Dense(10, activation='softmax')
-])
+def residual_block(x, filters, kernel_size=3, stride=1):
+    y = Conv2D(filters, kernel_size=kernel_size, strides=stride, padding='same')(x)
+    y = BatchNormalization()(y)
+    y = ReLU()(y)
+    y = Conv2D(filters, kernel_size=kernel_size, padding='same')(y)
+    y = BatchNormalization()(y)
+    
+    if stride > 1:
+        x = Conv2D(filters, kernel_size=1, strides=stride, padding='same')(x)
+    
+    out = Add()([x, y])
+    out = ReLU()(out)
+    return out
+
+def resnet(num_blocks=3):
+    input_layer = Input(shape=(32, 32, 3))
+    x = Conv2D(64, 3, strides=1, padding='same')(input_layer)  # Changed kernel size to 3x3
+    x = BatchNormalization()(x)
+    x = ReLU()(x)
+    x = AveragePooling2D(3, strides=2, padding='same')(x)
+    
+    for _ in range(num_blocks):
+        x = residual_block(x, 64)
+    
+    x = AveragePooling2D(8)(x)
+    x = Flatten()(x)
+    x = Dense(10, activation='softmax')(x)
+    
+    return Model(inputs=input_layer, outputs=x)
+     
+# You can increase num_blocks for a deeper network
+model = resnet(num_blocks=3)
 
 # Compile the model
-model.compile(optimizer='adam',
-              loss='categorical_crossentropy',
+model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.001), 
+              loss='categorical_crossentropy', 
               metrics=['accuracy'])
 
-# Define callbacks for early stopping and model checkpointing
-callbacks = [
-    tf.keras.callbacks.EarlyStopping(patience=5, restore_best_weights=True),
-    tf.keras.callbacks.ModelCheckpoint("cifar10_model.h5", save_best_only=True),
-]
+# Define callbacks (optional but useful)
+checkpoint = ModelCheckpoint("resnet_cifar10.h5", monitor='val_accuracy', save_best_only=True, mode='max', verbose=1)
+early_stopping = EarlyStopping(monitor='val_accuracy', patience=10, verbose=1, restore_best_weights=True)
 
+datagen = ImageDataGenerator(
+    rotation_range=15,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    horizontal_flip=True
+)
 # Train the model
-history = model.fit(train_images, train_labels, epochs=50, batch_size=64, 
-                    validation_data=(test_images, test_labels), callbacks=callbacks)
+history = model.fit(datagen.flow(train_images, train_labels, 
+                    epochs=50, 
+                    batch_size=128, 
+                    validation_split=0.2, 
+                    verbose = 1,
+                    callbacks=[checkpoint, early_stopping]))
 
-# Evaluate the model
-test_loss, test_accuracy = model.evaluate(test_images, test_labels)
-
-print(f'Test accuracy: {test_accuracy * 100:.2f}%')
+# Evaluate the model on the test set
+test_loss, test_accuracy = model.evaluate(test_images, test_labels, verbose=0)
+print(f"Test accuracy: {test_accuracy * 100:.2f}%")

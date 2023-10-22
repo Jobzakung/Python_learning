@@ -1,0 +1,24 @@
+train: "/yolo_segment/dataset"
+val: "/yolo_segment/dataset"
+
+nv: 4
+names: ["pandared","dog","cat","samoyed"]
+
+#hyper parameters
+# lr0: 0.01
+# lrf: 0.01
+# momentum: 0.9
+hsv_h: 0.015
+hsv_s: 0.5
+hsv_v: 0.4
+freeze: (0,..,20)
+batch_size: -1
+degree: 0.5
+translate: 0.1
+scale: 0.25
+shear: 0.1
+perspective: 0.1
+flipup: 0.7
+fliplr: 0.5
+mosaic: 0.3
+mixup: 0.1

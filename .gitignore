@@ -1,1 +1,12 @@
 *.zip
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.txt
+*.rar
+*.pdf
+*.xml
+*.mat
+sukird/lib/python3.11/site-packages
+```
