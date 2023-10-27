@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox
 
+
 def ins(name, phone):
     lb.insert(tk.END, f"{name}: {phone}")
+
 
 def button_click_1():
     input_dialog = InputDialog(root)
@@ -11,13 +13,16 @@ def button_click_1():
         name, phone = input_dialog.result
         ins(name, phone)
 
+
 def button_click_2():
     print("Delete Data")
     remove_data()
 
+
 def button_click_3():
     print("Edit Data")
     edit_data()
+
 
 def edit_data():
     selected_index = lb.curselection()
@@ -32,11 +37,13 @@ def edit_data():
             new_name, new_phone = input_dialog.result
             lb.insert(index, f"{new_name}: {new_phone}")
 
+
 def remove_data():
     selected_index = lb.curselection()
     if selected_index:
         index = selected_index[0]
         lb.delete(index)
+
 
 class InputDialog:
     def __init__(self, parent, name="", phone=""):
@@ -61,6 +68,7 @@ class InputDialog:
         phone = self.entry_phone.get()
         self.result = (name, phone)
         self.top.destroy()
+
 
 root = tk.Tk()
 root.geometry("600x200")
