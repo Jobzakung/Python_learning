@@ -1,0 +1,11 @@
+import requests
+
+url = "https://iqiyi.playbux.co/api/v2/watch-to-earn/rewards"
+headers = {
+    "Cookie": "__Host-next-auth.csrf-token=e1d69b402f2c3a4ebc071b6e1e9b09ba7b7a66ceccf898eb03422c84800598ad%7Cf573022d8bd1f5dfdb135c2fc9a1281f1a4fa46f67effb37e48c4ddfe72d3d9d; __Secure-next-auth.callback-url=https%3A%2F%2Fiqiyi.playbux.co%2F%2Fgame%3Fscene%3DGameCenter; __Secure-next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..KzVpBb4CqVmSS75f.n9WqIxoRIS8TGc35-ujEFeJmMP7htKwzijEHxxN3jb2lQWefVR9Qu3_e4NnbG0g4qd0eCD3qrb96QXy_IGBJ-_5RPvUMxif17Ssw5rgizBarhmwG0YIIASM_NJalhC1yBa163LOc8L7_XXsx6DFlaOyAFyou3f2i8d3JP9G6F9xcsy024hwPdkbkzezEIBoHvu4ltTD1fOj-lDueG_naNTcO.V2lgygT3wMjs1Ix1Npitgw; AMP_468b9b7a89=JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjJmYWRlNWY0NS1kZjQ4LTRkZjMtOTc0OC02OTBiNGI5ODk3NDUlMjIlMkMlMjJ1c2VySWQlMjIlM0ElMjI2NDcwM2RlNjczYjJhZjRiNGNlMzE0Y2QlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNjg2NTY0NjExNzk3JTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTY4NjU2NjAyMTM3NiU3RA=="
+}
+
+response = requests.get(url, headers=headers)
+data = response.json()
+
+print(data)
